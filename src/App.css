@@ -66,6 +66,12 @@ button {
   text-align: center;
 }
 
+.dropInfo {
+  margin-top: 15px;
+  font-weight: 900;
+  font-size: 18px;
+}
+
 .input-label {
   display: block;
   margin: 20px auto;
@@ -144,5 +150,8 @@ button {
   }
   .drag-file-block {
     width: 100%;
+  }
+  .dropInfo {
+    font-size: 12px;
   }
 }

@@ -245,7 +245,7 @@ const App = () => {
             onDrop={onDrop}
             style={fileEnter ? {backgroundColor: 'rgba(173, 216, 230, .5)'}:{backgroundColor: 'inherit'}}
         >
-          <div>拖拉 csv 檔至此</div>
+          <div className="dropInfo">將 csv 檔拖曳至此</div>
         </div>
         <label className="input-label">
           <img src={fileIcon} className="csvIcon" alt="csvIcon" />
