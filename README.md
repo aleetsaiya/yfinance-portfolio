@@ -2,7 +2,7 @@
 建立股票的持股以及績效分析表，幫助習慣使用 Yahoo finance 進行交易紀錄的使用者。
 
 ## 作品網址
-*Portfolio*: [https://aleetsaiya.github.io/portfolio/](https://aleetsaiya.github.io/portfolio/)
+*Portfolio*: [https://aleetsaiya.github.io/yfinance-portfolio](https://aleetsaiya.github.io/yfinance-portfolio)
 
 ## 操作方式
 *Yahoo Finance Portfolio*: [https://finance.yahoo.com/portfolios](https://finance.yahoo.com/portfolios)  
