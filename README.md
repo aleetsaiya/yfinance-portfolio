@@ -1,4 +1,4 @@
-# Portfolio
+# Yahoo Finance Portfolio
 建立股票的持股以及績效分析表，幫助習慣使用 Yahoo finance 進行交易紀錄的使用者。
 
 ## 作品網址
