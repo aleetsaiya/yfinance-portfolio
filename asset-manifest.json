@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/yfinance-portfolio/static/css/main.2d6f6333.chunk.css",
-    "main.js": "/yfinance-portfolio/static/js/main.ae294e1b.chunk.js",
-    "main.js.map": "/yfinance-portfolio/static/js/main.ae294e1b.chunk.js.map",
+    "main.js": "/yfinance-portfolio/static/js/main.23c0b4f7.chunk.js",
+    "main.js.map": "/yfinance-portfolio/static/js/main.23c0b4f7.chunk.js.map",
     "runtime-main.js": "/yfinance-portfolio/static/js/runtime-main.cffd751d.js",
     "runtime-main.js.map": "/yfinance-portfolio/static/js/runtime-main.cffd751d.js.map",
     "static/css/2.58a45539.chunk.css": "/yfinance-portfolio/static/css/2.58a45539.chunk.css",
@@ -19,6 +19,6 @@
     "static/css/2.58a45539.chunk.css",
     "static/js/2.8ba077ca.chunk.js",
     "static/css/main.2d6f6333.chunk.css",
-    "static/js/main.ae294e1b.chunk.js"
+    "static/js/main.23c0b4f7.chunk.js"
   ]
 }
