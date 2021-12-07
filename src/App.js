@@ -34,6 +34,41 @@ const App = () => {
     }
   });
 
+  const demoData = () => {
+    initData(
+      [
+        [
+          "SMH","300","2021/12/6","16:00 EST","-1.1499939","299.57","301.38","290.51","5105964","20211206","299.02","0.96984","","","",""
+        ],
+        [
+          "MSFT","326.19","2021/12/6","16:00 EST","3.1799927","323.95","327.42","319.23","30032556","20211126","334.11","0.29929","","","",""
+        ],
+        [
+          "MSFT","326.19","2021/12/6","16:00 EST","3.1799927","323.95","327.42","319.23","30032556","20211206","324.71","1.75542","","","",""
+        ],
+        [
+          "VOO","421.82","2021/12/6","16:00 EST","4.98001","419.41","423.64","417","7124862","20211126","424.96","0.35298","","","",""
+        ],
+        [
+          "VOO","421.82","2021/12/6","16:00 EST","4.98001","419.41","423.64","417","7124862","20211206","419.85","2.71527","","","",""
+        ],
+        [
+          "QQQ","386.2","2021/12/6","16:00 EST","3.0700073","383.63","387.6","379.31","64706783","20211126","396.07","0.25248","","","",""
+        ],
+        [
+          "QQQ","386.2","2021/12/6","16:00 EST","3.0700073","383.63","387.6","379.31","64706783","20211206","384.08","2.23912","","","",""
+        ]
+      ],
+      {
+        "symbol": 0,
+        "purchasePrice": 10,
+        "quantity": 11,
+        "tradingDate": 9,
+        "currentPrice": 1
+      }
+    );
+  }
+
   const findEnterprise = (ar, target) => {
     for(let i = 0; i < ar.length; i++) {
       if (ar[i]['symbol'] === target)
@@ -229,7 +264,6 @@ const App = () => {
     e.preventDefault();
     e.stopPropagation();
     setFileEnter(false);
-    console.log('leave');
   } 
 
   const onDrop = e => {
@@ -272,13 +306,15 @@ const App = () => {
           <div className="dropInfo">將 csv 檔拖曳至此</div>
         </div>
         <label className="input-label">
-          <img src={fileIcon} className="csvIcon" alt="csvIcon" />
-          <span>上傳檔案</span>
+          <span>📁 上傳檔案</span>
           <div style={{display: 'none'}}>
             <CSVReader onFileLoaded={rows => {
               loadData(rows);
             }} />
           </div>
+        </label>
+        <label className="input-label" onClick={demoData}>
+          <span>💡 使用範例</span>
         </label>
       </div>
       <main style={(fileLoaded && seconds <= 0) ? {}:{visibility: "hidden"}}>
