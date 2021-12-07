@@ -28,6 +28,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    document.title = "Portfolio";
     if ( fileLoaded && seconds > 0) {
       setTimeout(() => setSeconds(seconds - 1), 1000);
     }
@@ -117,6 +118,11 @@ const App = () => {
       totalProfit += profit;
     }
 
+    // sort emterprise by holdingPercent
+    temp.sort((t1, t2) => {
+      return t2.totalCost - t1.totalCost;
+    })
+
     return {
       infoData: {
         totalCost: (Math.round((totalCost)*100) / 100).toString(),
@@ -148,6 +154,27 @@ const App = () => {
         totalCost: (purchasePrice * quantity)
       })
     }
+    // sort by tradingDate
+    temp.sort((t1, t2) => {
+      if (t1.tradingDate === "NaN" && t2.tradingDate !== "NaN")
+        return 1;
+      if (t1.tradingDate !== "NaN" && t2.tradingDate === "NaN")
+        return -1;
+      const d1 = t1.tradingDate.split('/');
+      const d2 = t2.tradingDate.split('/');
+      if (parseInt(d1[0]) > parseInt(d2[0]))
+        return -1;
+      if (parseInt(d1[0]) < parseInt(d2[0]))
+        return 1;
+      if (parseInt(d1[1]) > parseInt(d2[1]))
+        return -1;
+      if (parseInt(d1[1]) < parseInt(d2[1]))
+        return 1;
+      if (parseInt(d1[2]) > parseInt(d2[2]))
+        return -1;
+      if (parseInt(d1[2]) < parseInt(d2[2]))
+        return 1;
+    });
     return temp;
   };
 
@@ -191,7 +218,6 @@ const App = () => {
     e.stopPropagation();
     e.preventDefault();
     setFileEnter(true);
-    console.log('enter');
   }
 
   const onDragOver = e => {
@@ -233,9 +259,7 @@ const App = () => {
   return (
     <div className='App'>
       <h1>Portfolio</h1>
-      <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}>
-        {console.log(seconds === 0)}
-      </div>
+      <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}></div>
       <div className={fileLoaded ? "hide":""}>
         <div 
             className="drag-file-block"
