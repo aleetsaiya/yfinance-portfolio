@@ -110,6 +110,7 @@ const App = () => {
     const temp = [];
     let totalCost = 0;
     let totalProfit = 0;
+    let totalAsset = 0;
     for(let trading of tradingHistory) {
       const symbol = trading[indexBundle.symbol];
       const currentPrice = parseFloat(trading[indexBundle.currentPrice]);
@@ -118,6 +119,7 @@ const App = () => {
       const quantity = parseFloat(trading[indexBundle.quantity]);
       
       totalCost += (purchasePrice * quantity);
+      totalAsset += (currentPrice * quantity);
       const index = findEnterprise(temp, symbol);
       if (index !== false) {
         temp[index]['tradingHistory'].push({
@@ -143,7 +145,7 @@ const App = () => {
     }
     // set enterprise's totalProfit
     for(let t of temp) {
-      t['holdingPercent'] = (Math.round((t['totalCost'] / totalCost)*10000) / 100).toString() + '%';
+      t['holdingPercent'] = (Math.round(((t['currentPrice'] * t['totalQuantity']) / totalAsset)*10000) / 100);
       let profit = 0;
       const currentPrice = t['currentPrice'];
       for(let th of t['tradingHistory']) {
@@ -155,8 +157,12 @@ const App = () => {
 
     // sort emterprise by holdingPercent
     temp.sort((t1, t2) => {
-      return t2.totalCost - t1.totalCost;
+      return t2.holdingPercent - t1.holdingPercent;
     })
+
+    for(let t of temp) {
+      t.holdingPercent = t.holdingPercent.toString() + '%';
+    }
 
     return {
       infoData: {
