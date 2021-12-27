@@ -11,9 +11,9 @@ const DonutChart = props => {
             colors:['#161d20']
         },
         colors: ['#48b5c4', '#1C4E80', '#0091D5', '#6cb4e4'],
-        dataLabels: {
-            enabled: false
-        }
+        // dataLabels: {
+        //     enabled: false
+        // }
     };
 
     return (

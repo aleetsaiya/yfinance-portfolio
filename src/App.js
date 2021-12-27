@@ -160,10 +160,6 @@ const App = () => {
       return t2.holdingPercent - t1.holdingPercent;
     })
 
-    for(let t of temp) {
-      t.holdingPercent = t.holdingPercent.toString() + '%';
-    }
-
     return {
       infoData: {
         totalCost: (Math.round((totalCost)*100) / 100).toString(),
@@ -227,10 +223,10 @@ const App = () => {
     return temp;
   };
 
-  const getEnterprisesCost = () => {
+  const getEnterprisesWeight = () => {
     const temp = [];
     for(let enterprise of dataBundle.enterprises) {
-      temp.push(Math.round(enterprise.totalCost * 100) / 100);
+      temp.push(enterprise.holdingPercent);
     }
     return temp;
   };
@@ -336,7 +332,7 @@ const App = () => {
         <div className="block-row">
           <div className="left chart">
             <DonutChart 
-              series={getEnterprisesCost().length === 0 ? [80000, 45000, 16000] : getEnterprisesCost()} 
+              series={getEnterprisesWeight().length === 0 ? [80000, 45000, 16000] : getEnterprisesWeight()} 
               labels={getEnterprisesSymbol().length === 0 ? ['stock1', 'stock2', 'stock3'] : getEnterprisesSymbol()}
             />
           </div>
