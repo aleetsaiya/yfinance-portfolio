@@ -52,7 +52,8 @@ const BarChart = props => {
               data: series
             }
           ]} 
-          type="bar" 
+          type="bar"
+          height="240px"
         />
     )
 };

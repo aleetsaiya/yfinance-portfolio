@@ -43,7 +43,6 @@ const Table = props => {
           </tr>
         </thead>
         <tbody>
-          {/* 獲益的 column 新增 onclick 切換 % 或是金額 */}
           {getData()}
         </tbody>
       </table>
