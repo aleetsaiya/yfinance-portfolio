@@ -4,7 +4,7 @@ import DonutChart from './component/chart/DonutChart';
 import Table from './component/Table';
 import Info from './component/Info';
 import BarChart from './component/chart/BarChart';
-import fileIcon from './icon/file-regular.svg';
+import LineChart from './component/chart/LineChart';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -361,6 +361,10 @@ const App = () => {
             <Table headRow={tradingHistoryTable.headRow} dataRows={dataBundle.tradingHistory} targetData={tradingHistoryTable.targetData}/>
           </div>
         </div>
+        <div className="block-title res-title">
+          <h3>股票市值走勢</h3>
+        </div>
+        <LineChart/>
         <div className="footer"></div>
       </main>
       <ToastContainer

@@ -23,7 +23,8 @@ const DonutChart = props => {
                 ...defaultSetting
             }} 
             series={series} 
-            type="donut" 
+            type="donut"
+            height="260px"
         />
     )
 };

@@ -43,7 +43,7 @@ button {
 
 .block-row > .left {
   width: 40%;
-  max-width: 380px;
+  /* max-width: 380px; */
 }
 
 .block-row > .right {
