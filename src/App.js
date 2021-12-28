@@ -7,6 +7,7 @@ import BarChart from './component/chart/BarChart';
 import LineChart from './component/chart/LineChart';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 import './App.css';
 
 const App = () => {
@@ -15,22 +16,31 @@ const App = () => {
     enterprises: [],
     tradingHistory: []
   });
+  const [isRequestd, setIsRequesed] = useState(false);
   const [fileLoaded, setFileLoaded] = useState(false);
   const [fileEnter, setFileEnter] = useState(false);
   const [seconds, setSeconds] = useState(1);
+  const [reSeconds, setReSeconds] = useState(1.5);
+  const [hisPerformance, setHisPerformance] = useState([{
+    x: new Date(1640269800*1000).toLocaleString(),
+    y: 100
+  }]);
   const holdingStockTable = {
-    'headRow': ['代號', '股數', '單位成本', '最新價', '持股占比'],
-    'targetData': ['symbol', 'totalQuantity', 'averageCost', 'currentPrice', 'holdingPercent']
+    headRow: ['代號', '股數', '單位成本', '最新價', '持股占比'],
+    targetData: ['symbol', 'totalQuantity', 'averageCost', 'currentPrice', 'holdingPercent']
   };
   const tradingHistoryTable = {
-    'headRow': ['代號', '交易時間', '股數', '成交價', '金額'],
-    'targetData': ['symbol', 'tradingDate', 'quantity', 'purchasePrice', 'totalCost']
+    headRow: ['代號', '交易時間', '股數', '成交價', '金額'],
+    targetData: ['symbol', 'tradingDate', 'quantity', 'purchasePrice', 'totalCost']
   };
 
   useEffect(() => {
     document.title = "Portfolio";
-    if ( fileLoaded && seconds > 0) {
+    if (fileLoaded && seconds > 0) {
       setTimeout(() => setSeconds(seconds - 1), 1000);
+    }
+    if (isRequestd && reSeconds > 0) {
+      setTimeout(() => setReSeconds(reSeconds - 0.5), 500);
     }
   });
 
@@ -239,6 +249,90 @@ const App = () => {
     return temp;
   };
 
+  const requestFinanceData = () => {
+    const options = {
+      method: 'GET',
+      url: 'https://yfapi.net/v8/finance/spark',
+      headers: {
+        'x-api-key': 'auNxCyh1Gf66HIXod3SN5aeAVI6JUB37Kd5iClYh'
+      },
+      params: {
+        symbols: "MSFT,VOO,QQQ,SMH",
+        interval: "1d",
+        range: "1mo"
+      }
+    };
+    setIsRequesed(true);
+    const promise = axios.request(options);
+    promise.then(response => {
+      const data = response.data;
+      console.log(data);
+      const symbols = [];
+      for (let symbol in data) {
+        // const MSFT = {data: data.MSFT.close, date: timestampToDate(data.MSFT.timestamp)};
+        symbols.push({symbol: symbol, data: data[symbol].close, date: data[symbol].timestamp});
+      }
+      const performanceHistory = [];
+      // find first data date
+      const firstDate = new Date(symbols[0]['date'][0]*1000)
+      const now = Date.now();
+      const compareDate = (a, b) => {
+        const ay = a.getFullYear();
+        const am = a.getMonth();
+        const ad = a.getDate();
+
+        const by = b.getFullYear();
+        const bm = b.getMonth();
+        const bd = b.getDate();
+
+        if (ay < by) return 1;
+        if (ay === by && am < bm) return 1;
+        if (ay === by && am === bm && ad < bd) return 1;
+        if (ay === by && am === bm && ad === bd) return 0;
+        return -1;
+      }
+      // loop with every day
+      for(let d = firstDate; d <= now; d.setDate(d.getDate() + 1)) {
+        let currentProfit = 0;
+        // use request data to get every enterprise price in the past
+        const pastPrice = [];
+        // for every symbol
+        for(let s of symbols) {
+          // for every date in symbol
+          for(let i = 0; i < s.date.length; i++) {
+            if (i === s.date.length-1) {
+              pastPrice.push({symbol: s.symbol, price: s.data[i]});
+              break;
+            }
+            // 1個月前的每一天 == 資料紀錄的日期
+            if (compareDate(d, new Date(s.date[i]*1000)) === 0) {
+              pastPrice.push({symbol: s.symbol, price: s.data[i]});
+              break;
+            }
+            // 假日 or 休市日
+            if (compareDate(d, new Date(s.date[i]*1000)) === -1 && compareDate(d, new Date(s.date[i+1]*1000)) === 1) {
+              pastPrice.push({symbol: s.symbol, price: s.data[i-1]});
+              break;
+            }
+          }
+        }
+        // loop with every tradingHistory
+        for(let trade of dataBundle.tradingHistory) {
+          // 交易時間比現在還要早
+          if (compareDate(d, new Date(trade.tradingDate)) === -1) {
+            const pp = pastPrice.find(p => p.symbol === trade.symbol);
+            currentProfit += (trade.quantity * (pp.price - trade.purchasePrice));
+          }
+        }
+        performanceHistory.push({x: d.toLocaleDateString(), y: currentProfit});
+      }
+      setHisPerformance(performanceHistory);
+    }).catch(error => {
+      console.log(error);
+      toast.error('Unexpected error occurred.');
+    })
+  }
+
   const isValidCSV = fileData => {
     const checkList = ['Symbol', 'Purchase Price', 'Quantity', 'Current Price', 'Trade Date'];
     for(let symbol of checkList) {
@@ -360,7 +454,11 @@ const App = () => {
         <div className="block-title res-title">
           <h3>股票市值走勢</h3>
         </div>
-        <LineChart/>
+        <button className={isRequestd ? 'hide': 'input-label'} onClick={requestFinanceData}>請求資料</button>
+        <div className={(!isRequestd) || (isRequestd && reSeconds <= 0) ? "hide":"load"}></div>
+        <div className={(isRequestd && reSeconds === 0) ? "":"dontShow"}>  
+          <LineChart data={hisPerformance}/>
+        </div>
         <div className="footer"></div>
       </main>
       <ToastContainer

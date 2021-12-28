@@ -10,10 +10,10 @@ const DonutChart = props => {
         stroke:{
             colors:['#161d20']
         },
-        colors: ['#48b5c4', '#1C4E80', '#0091D5', '#6cb4e4'],
-        // dataLabels: {
-        //     enabled: false
-        // }
+        colors: ['#ED5565', '#FFCE54', '#48CFAD', '#4FC1E9', '#FC6E51', '#5D9CEC'],
+        dataLabels: {
+            enabled: false
+        }
     };
 
     return (
@@ -24,7 +24,7 @@ const DonutChart = props => {
             }} 
             series={series} 
             type="donut"
-            height="260px"
+            height="200px"
         />
     )
 };

@@ -24,6 +24,9 @@ const Table = props => {
               const aveCost = Round(row['totalCost'] / row['totalQuantity'], 2);
               return <td key={aveCost.toString() + '-' + index.toString()}> {aveCost} </td>
             }
+            if (target === 'holdingPercent') {
+              return <td key={row[target].toString() + '-' + index.toString()}>{row[target] + '%'}</td>
+            }
             return <td key={row[target].toString() + '-' + index.toString()}>
               {typeof row[target] === 'number' ? Round(row[target], 2) : row[target]}
             </td>;
