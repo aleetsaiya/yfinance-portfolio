@@ -293,7 +293,7 @@ const App = () => {
       }
       // loop with every day
       for(let d = firstDate; d <= now; d.setDate(d.getDate() + 1)) {
-        let currentProfit = 0;
+        let currentAsset = 0;
         // use request data to get every enterprise price in the past
         const pastPrice = [];
         // for every symbol
@@ -319,12 +319,12 @@ const App = () => {
         // loop with every tradingHistory
         for(let trade of dataBundle.tradingHistory) {
           // 交易時間比現在還要早
-          if (compareDate(d, new Date(trade.tradingDate)) === -1) {
+          if (compareDate(d, new Date(trade.tradingDate)) === -1 || compareDate(d, new Date(trade.tradingDate)) === 0) {
             const pp = pastPrice.find(p => p.symbol === trade.symbol);
-            currentProfit += (trade.quantity * (pp.price - trade.purchasePrice));
+            currentAsset += (trade.quantity * pp.price);
           }
         }
-        performanceHistory.push({x: d.toLocaleDateString(), y: currentProfit});
+        performanceHistory.push({x: d.toLocaleDateString(), y: currentAsset});
       }
       setHisPerformance(performanceHistory);
     }).catch(error => {
