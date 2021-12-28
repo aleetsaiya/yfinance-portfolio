@@ -18,4 +18,6 @@ QQQ           |      381.37    |  20211127  |    397.26      |  0.25248
 
 
 ## 預覽
+![網頁擷取_28-12-2021_19446_aleetsaiya github io](https://user-images.githubusercontent.com/67775387/147563264-fad3d3df-e1fc-4ddc-a920-ee539170dce9.jpeg)
+
 ![demo](https://user-images.githubusercontent.com/67775387/144752196-a0d96f97-bc71-47e4-bfd4-5410f927e4a0.jpeg)
