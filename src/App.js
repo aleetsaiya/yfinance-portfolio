@@ -25,6 +25,9 @@ const App = () => {
     x: new Date(1640269800*1000).toLocaleString(),
     y: 100
   }]);
+  const [requestData, setRequestData] = useState([]);
+
+  // let requestData;
   const holdingStockTable = {
     headRow: ['代號', '股數', '單位成本', '最新價', '持股占比'],
     targetData: ['symbol', 'totalQuantity', 'averageCost', 'currentPrice', 'holdingPercent']
@@ -35,6 +38,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    console.log('in use Effect');
     document.title = "Portfolio";
     if (fileLoaded && seconds > 0) {
       setTimeout(() => setSeconds(seconds - 1), 1000);
@@ -259,78 +263,86 @@ const App = () => {
       params: {
         symbols: "MSFT,VOO,QQQ,SMH",
         interval: "1d",
-        range: "1mo"
+        range: "1y"
       }
     };
     setIsRequesed(true);
     const promise = axios.request(options);
     promise.then(response => {
       const data = response.data;
-      console.log(data);
+      console.log('response', data);
       const symbols = [];
       for (let symbol in data) {
         // const MSFT = {data: data.MSFT.close, date: timestampToDate(data.MSFT.timestamp)};
         symbols.push({symbol: symbol, data: data[symbol].close, date: data[symbol].timestamp});
       }
-      const performanceHistory = [];
-      // find first data date
-      const firstDate = new Date(symbols[0]['date'][0]*1000)
-      const now = Date.now();
-      const compareDate = (a, b) => {
-        const ay = a.getFullYear();
-        const am = a.getMonth();
-        const ad = a.getDate();
-
-        const by = b.getFullYear();
-        const bm = b.getMonth();
-        const bd = b.getDate();
-
-        if (ay < by) return 1;
-        if (ay === by && am < bm) return 1;
-        if (ay === by && am === bm && ad < bd) return 1;
-        if (ay === by && am === bm && ad === bd) return 0;
-        return -1;
-      }
-      // loop with every day
-      for(let d = firstDate; d <= now; d.setDate(d.getDate() + 1)) {
-        let currentAsset = 0;
-        // use request data to get every enterprise price in the past
-        const pastPrice = [];
-        // for every symbol
-        for(let s of symbols) {
-          // for every date in symbol
-          for(let i = 0; i < s.date.length; i++) {
-            if (i === s.date.length-1) {
-              pastPrice.push({symbol: s.symbol, price: s.data[i]});
-              break;
-            }
-            // 1個月前的每一天 == 資料紀錄的日期
-            if (compareDate(d, new Date(s.date[i]*1000)) === 0) {
-              pastPrice.push({symbol: s.symbol, price: s.data[i]});
-              break;
-            }
-            // 假日 or 休市日
-            if (compareDate(d, new Date(s.date[i]*1000)) === -1 && compareDate(d, new Date(s.date[i+1]*1000)) === 1) {
-              pastPrice.push({symbol: s.symbol, price: s.data[i-1]});
-              break;
-            }
-          }
-        }
-        // loop with every tradingHistory
-        for(let trade of dataBundle.tradingHistory) {
-          // 交易時間比現在還要早
-          if (compareDate(d, new Date(trade.tradingDate)) === -1 || compareDate(d, new Date(trade.tradingDate)) === 0) {
-            const pp = pastPrice.find(p => p.symbol === trade.symbol);
-            currentAsset += (trade.quantity * pp.price);
-          }
-        }
-        performanceHistory.push({x: d.toLocaleDateString(), y: currentAsset});
-      }
-      setHisPerformance(performanceHistory);
+      localStorage.setItem('symbols', JSON.stringify(symbols));
+      getHisPerformance(0, 7);
     }).catch(error => {
       console.log(error);
       toast.error('Unexpected error occurred.');
     })
+  }
+
+  const getHisPerformance = (monthsAgo, daysAgo) => {
+    const performanceHistory = [];
+    // find first data date
+    const firstDate = new Date();
+    firstDate.setMonth(firstDate.getMonth() - monthsAgo);
+    firstDate.setDate(firstDate.getDate() - daysAgo);
+    const now = Date.now();
+    const compareDate = (a, b) => {
+      const ay = a.getFullYear();
+      const am = a.getMonth();
+      const ad = a.getDate();
+
+      const by = b.getFullYear();
+      const bm = b.getMonth();
+      const bd = b.getDate();
+
+      if (ay < by) return 1;
+      if (ay === by && am < bm) return 1;
+      if (ay === by && am === bm && ad < bd) return 1;
+      if (ay === by && am === bm && ad === bd) return 0;
+      return -1;
+    }
+    const symbols = JSON.parse(localStorage.getItem('symbols'));
+    // loop with every day
+    for(let d = firstDate; d <= now; d.setDate(d.getDate() + 1)) {
+      let currentAsset = 0;
+      // use request data to get every enterprise price in the past
+      const pastPrice = [];
+      // for every symbol
+      for(let s of symbols) {
+        // for every date in symbol
+        for(let i = 0; i < s.date.length; i++) {
+          if (i === s.date.length-1) {
+            pastPrice.push({symbol: s.symbol, price: s.data[i]});
+            break;
+          }
+          // 1個月前的每一天 == 資料紀錄的日期
+          if (compareDate(d, new Date(s.date[i]*1000)) === 0) {
+            pastPrice.push({symbol: s.symbol, price: s.data[i]});
+            break;
+          }
+          // 假日 or 休市日
+          if (compareDate(d, new Date(s.date[i]*1000)) === -1 && compareDate(d, new Date(s.date[i+1]*1000)) === 1) {
+            pastPrice.push({symbol: s.symbol, price: s.data[i-1]});
+            break;
+          }
+        }
+      }
+      // loop with every tradingHistory
+      for(let trade of dataBundle.tradingHistory) {
+        // 交易時間比現在還要早
+        if (compareDate(d, new Date(trade.tradingDate)) === -1 || compareDate(d, new Date(trade.tradingDate)) === 0) {
+          const pp = pastPrice.find(p => p.symbol === trade.symbol);
+          currentAsset += (trade.quantity * pp.price);
+        }
+      }
+      performanceHistory.push({x: d.toLocaleDateString(), y: currentAsset});
+    }
+    setHisPerformance(performanceHistory);
   }
 
   const isValidCSV = fileData => {
@@ -386,8 +398,18 @@ const App = () => {
     }
   }
 
+  const switchFocus = e => {
+    const parent = e.target.parentNode;
+    const buttons = parent.childNodes;
+    for(let button of buttons) {
+      button.classList.remove('focus');
+    }
+    e.target.classList.add('focus');
+  }
+
   return (
     <div className='App'>
+      {console.log('in render')}
       <h1>Portfolio</h1>
       <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}></div>
       <div className={fileLoaded ? "hide":""}>
@@ -456,7 +478,25 @@ const App = () => {
         </div>
         <button className={isRequestd ? 'hide': 'input-label'} onClick={requestFinanceData}>請求資料</button>
         <div className={(!isRequestd) || (isRequestd && reSeconds <= 0) ? "hide":"load"}></div>
-        <div className={(isRequestd && reSeconds === 0) ? "":"dontShow"}>  
+        <div className={(isRequestd && reSeconds === 0) ? "":"dontShow"}>
+          <div>
+            <button className='focus timeButton' onClick={e => {
+              getHisPerformance(0, 7);
+              switchFocus(e);
+              }}>7天</button>
+            <button className="timeButton" onClick={e => {
+              getHisPerformance(1, 0);
+              switchFocus(e);
+              }}>1月</button>
+            <button className="timeButton" onClick={e => {
+              getHisPerformance(6, 0);
+              switchFocus(e);
+            }}>6月</button>
+            <button className="timeButton" onClick={e => {
+              getHisPerformance(12, 0);
+              switchFocus(e);
+            }}>1年</button>
+          </div>
           <LineChart data={hisPerformance}/>
         </div>
         <div className="footer"></div>

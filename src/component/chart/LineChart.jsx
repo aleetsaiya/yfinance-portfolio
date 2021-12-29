@@ -4,14 +4,16 @@ import ReactApexChart from 'react-apexcharts';
 const LineChart = props => {
     const { data } = props;
     const options = {
-        colors: ['#80afdf'],
         chart: {
             height: 350,
-            type: 'line',
+            type: 'area',
             foreColor: '#fff',
             zoom: {
                 enabled: false
             }
+        },
+        stroke: {
+            curve: 'straight'
         },
         xaxis: {
             type: 'datetime'
@@ -22,7 +24,10 @@ const LineChart = props => {
                     return value.toFixed(1);
                 }
             }
-        }
+        },
+        dataLabels: {
+            enabled: false
+        },
     };
 
     return (
@@ -32,7 +37,7 @@ const LineChart = props => {
               name: "price",
               data: data
           }]} 
-          type="line" 
+          type= 'area' 
           style={{color: '#000'}} 
           height="300px"
         />

@@ -51,7 +51,7 @@ const Table = props => {
       </table>
       <div className="paging">
         <button className="page" onClick={() => movePage(-1)} disabled={page === 0 ? 'disabled':''}>{'<'}</button>
-        <button className="page" onClick={() => movePage(1)} disabled={(page + 1) * 5 > dataRows.length ? 'disabled':''}>{'>'}</button>
+        <button className="page" onClick={() => movePage(1)} disabled={((page + 1) * 5) > dataRows.length ? 'disabled':''}>{'>'}</button>
       </div>
     </div>
   );

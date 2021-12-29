@@ -110,6 +110,20 @@ button {
   animation-timing-function:  ease-out; 
 }
 
+.timeButton.focus {
+  color: #2082eb;
+  border-bottom: solid 3px #2082eb;
+  border-radius: 3px;
+}
+
+.timeButton {
+  color: rgb(212, 212, 212);
+  font-size: 14px;
+  padding: 3px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .hide {
   display: none;
 }
@@ -127,7 +141,7 @@ button {
   }
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 780px) {
   h1 {
     margin-top: 30px;
     text-align: center;
