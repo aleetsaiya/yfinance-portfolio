@@ -128,10 +128,6 @@ button {
   display: none;
 }
 
-.dontShow {
-  visibility: hidden;
-}
-
 @keyframes rotate{
   0%{
     transform: rotate(0deg);

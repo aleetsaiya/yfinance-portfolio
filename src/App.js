@@ -16,16 +16,13 @@ const App = () => {
     enterprises: [],
     tradingHistory: []
   });
-  const [isRequestd, setIsRequesed] = useState(false);
   const [fileLoaded, setFileLoaded] = useState(false);
   const [fileEnter, setFileEnter] = useState(false);
-  const [seconds, setSeconds] = useState(1);
-  const [reSeconds, setReSeconds] = useState(1.5);
+  const [seconds, setSeconds] = useState(2);
   const [hisPerformance, setHisPerformance] = useState([{
     x: new Date(1640269800*1000).toLocaleString(),
     y: 100
   }]);
-  const [requestData, setRequestData] = useState([]);
 
   // let requestData;
   const holdingStockTable = {
@@ -38,17 +35,21 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log('in use Effect');
     document.title = "Portfolio";
     if (fileLoaded && seconds > 0) {
-      setTimeout(() => setSeconds(seconds - 1), 1000);
-    }
-    if (isRequestd && reSeconds > 0) {
-      setTimeout(() => setReSeconds(reSeconds - 0.5), 500);
+      setTimeout(() => setSeconds(seconds => seconds - 1), 1000);
     }
   });
 
-  const demoData = () => {
+  useEffect(() => {
+    if (dataBundle.tradingHistory.length !== 0) {
+      getHisPerformance(0, 7);
+    }
+  }, [dataBundle]);
+
+  const demoData = async () => {
+    setFileLoaded(true);
+    await requestFinanceData();
     initData(
       [
         [
@@ -77,8 +78,7 @@ const App = () => {
         "symbol": 0,
         "purchasePrice": 10,
         "quantity": 11,
-        "tradingDate": 9,
-        "currentPrice": 1
+        "tradingDate": 9
       }
     );
   }
@@ -91,18 +91,19 @@ const App = () => {
     return false;
   };
 
-  const loadData = rows => {
+  const loadData = async rows => {
     const data = [];
     const indexBundle = {
       symbol: rows[0].indexOf('Symbol'),
       purchasePrice: rows[0].indexOf('Purchase Price'),
       quantity: rows[0].indexOf('Quantity'),
       tradingDate: rows[0].indexOf('Trade Date'),
-      currentPrice: rows[0].indexOf('Current Price')
     }
+    setFileLoaded(true);
+    await requestFinanceData();
     if (isValidCSV(rows[0])) {
       for(let i = 1; i < rows.length; i++) {
-          if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity])
+          if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate])
             data.push(rows[i]);
       }
       initData(data, indexBundle);
@@ -117,7 +118,6 @@ const App = () => {
       tradingHistory: tradingHistory,
       infoData: infoData
     });
-    setFileLoaded(true);
   };
 
   const getEnterprisesData = (tradingHistory, indexBundle) => {
@@ -125,9 +125,16 @@ const App = () => {
     let totalCost = 0;
     let totalProfit = 0;
     let totalAsset = 0;
+    const currentPrices = {};
+    const localData = JSON.parse(localStorage.getItem('symbols'));
+    for(let l of localData) {
+      currentPrices[l.symbol] = l.data[l.data.length - 1];
+    }
+
     for(let trading of tradingHistory) {
       const symbol = trading[indexBundle.symbol];
-      const currentPrice = parseFloat(trading[indexBundle.currentPrice]);
+      // const currentPrice = parseFloat(trading[indexBundle.currentPrice]);
+      const currentPrice = currentPrices[symbol];
       const tradingDate = parseFloat(trading[indexBundle.tradingDate]);
       const purchasePrice = parseFloat(trading[indexBundle.purchasePrice]);
       const quantity = parseFloat(trading[indexBundle.quantity]);
@@ -253,7 +260,7 @@ const App = () => {
     return temp;
   };
 
-  const requestFinanceData = () => {
+  const requestFinanceData = async () => {
     const options = {
       method: 'GET',
       url: 'https://yfapi.net/v8/finance/spark',
@@ -266,9 +273,7 @@ const App = () => {
         range: "1y"
       }
     };
-    setIsRequesed(true);
-    const promise = axios.request(options);
-    promise.then(response => {
+    return axios.request(options).then(response => {
       const data = response.data;
       console.log('response', data);
       const symbols = [];
@@ -277,11 +282,11 @@ const App = () => {
         symbols.push({symbol: symbol, data: data[symbol].close, date: data[symbol].timestamp});
       }
       localStorage.setItem('symbols', JSON.stringify(symbols));
-      getHisPerformance(0, 7);
+      // getHisPerformance(0, 7);
     }).catch(error => {
       console.log(error);
       toast.error('Unexpected error occurred.');
-    })
+    });
   }
 
   const getHisPerformance = (monthsAgo, daysAgo) => {
@@ -346,7 +351,7 @@ const App = () => {
   }
 
   const isValidCSV = fileData => {
-    const checkList = ['Symbol', 'Purchase Price', 'Quantity', 'Current Price', 'Trade Date'];
+    const checkList = ['Symbol', 'Purchase Price', 'Quantity', 'Trade Date'];
     for(let symbol of checkList) {
       if (fileData.indexOf(symbol) === -1) {
         setFileEnter(false);
@@ -409,7 +414,6 @@ const App = () => {
 
   return (
     <div className='App'>
-      {console.log('in render')}
       <h1>Portfolio</h1>
       <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}></div>
       <div className={fileLoaded ? "hide":""}>
@@ -476,9 +480,7 @@ const App = () => {
         <div className="block-title res-title">
           <h3>股票市值走勢</h3>
         </div>
-        <button className={isRequestd ? 'hide': 'input-label'} onClick={requestFinanceData}>請求資料</button>
-        <div className={(!isRequestd) || (isRequestd && reSeconds <= 0) ? "hide":"load"}></div>
-        <div className={(isRequestd && reSeconds === 0) ? "":"dontShow"}>
+        <div>
           <div>
             <button className='focus timeButton' onClick={e => {
               getHisPerformance(0, 7);
