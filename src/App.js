@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import CSVReader from 'react-csv-reader';
 import DonutChart from './component/chart/DonutChart';
 import Table from './component/Table';
 import Info from './component/Info';
@@ -24,7 +23,6 @@ const App = () => {
     y: 100
   }]);
 
-  // let requestData;
   const holdingStockTable = {
     headRow: ['代號', '股數', '單位成本', '最新價', '持股占比'],
     targetData: ['symbol', 'totalQuantity', 'averageCost', 'currentPrice', 'holdingPercent']
@@ -83,14 +81,6 @@ const App = () => {
     );
   }
 
-  const findEnterprise = (ar, target) => {
-    for(let i = 0; i < ar.length; i++) {
-      if (ar[i]['symbol'] === target)
-        return i;
-    }
-    return false;
-  };
-
   const loadData = async rows => {
     const data = [];
     const indexBundle = {
@@ -99,13 +89,14 @@ const App = () => {
       quantity: rows[0].indexOf('Quantity'),
       tradingDate: rows[0].indexOf('Trade Date'),
     }
-    setFileLoaded(true);
-    await requestFinanceData();
-    if (isValidCSV(rows[0])) {
+    console.log('in loadData');
+    if (isValidCSV(rows[0])) { 
       for(let i = 1; i < rows.length; i++) {
-          if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate])
-            data.push(rows[i]);
+        if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate])
+          data.push(rows[i]);
       }
+      setFileLoaded(true);
+      await requestFinanceData();
       initData(data, indexBundle);
     }
   };
@@ -126,7 +117,7 @@ const App = () => {
     let totalProfit = 0;
     let totalAsset = 0;
     const currentPrices = {};
-    const localData = JSON.parse(localStorage.getItem('symbols'));
+    const localData = JSON.parse(sessionStorage.getItem('symbols'));
     for(let l of localData) {
       currentPrices[l.symbol] = l.data[l.data.length - 1];
     }
@@ -141,6 +132,14 @@ const App = () => {
       
       totalCost += (purchasePrice * quantity);
       totalAsset += (currentPrice * quantity);
+
+      const findEnterprise = (ar, target) => {
+        for(let i = 0; i < ar.length; i++) {
+          if (ar[i]['symbol'] === target)
+            return i;
+        }
+        return false;
+      };
       const index = findEnterprise(temp, symbol);
       if (index !== false) {
         temp[index]['tradingHistory'].push({
@@ -281,81 +280,93 @@ const App = () => {
         // const MSFT = {data: data.MSFT.close, date: timestampToDate(data.MSFT.timestamp)};
         symbols.push({symbol: symbol, data: data[symbol].close, date: data[symbol].timestamp});
       }
-      localStorage.setItem('symbols', JSON.stringify(symbols));
+      sessionStorage.clear();
+      sessionStorage.setItem('symbols', JSON.stringify(symbols));
       // getHisPerformance(0, 7);
     }).catch(error => {
       console.log(error);
-      toast.error('Unexpected error occurred.');
+      toast.error('請求資料時發生錯誤.');
     });
   }
 
   const getHisPerformance = (monthsAgo, daysAgo) => {
-    const performanceHistory = [];
-    // find first data date
-    const firstDate = new Date();
-    firstDate.setMonth(firstDate.getMonth() - monthsAgo);
-    firstDate.setDate(firstDate.getDate() - daysAgo);
-    const now = Date.now();
-    const compareDate = (a, b) => {
-      const ay = a.getFullYear();
-      const am = a.getMonth();
-      const ad = a.getDate();
-
-      const by = b.getFullYear();
-      const bm = b.getMonth();
-      const bd = b.getDate();
-
-      if (ay < by) return 1;
-      if (ay === by && am < bm) return 1;
-      if (ay === by && am === bm && ad < bd) return 1;
-      if (ay === by && am === bm && ad === bd) return 0;
-      return -1;
+    const searchKey = monthsAgo + '-' + daysAgo + '-' + 'performance';
+    let performanceHistory = sessionStorage.getItem(searchKey);
+    if (performanceHistory) {
+      console.log('get search:', searchKey);
+      setHisPerformance(JSON.parse(performanceHistory));
     }
-    const symbols = JSON.parse(localStorage.getItem('symbols'));
-    // loop with every day
-    for(let d = firstDate; d <= now; d.setDate(d.getDate() + 1)) {
-      let currentAsset = 0;
-      // use request data to get every enterprise price in the past
-      const pastPrice = [];
-      // for every symbol
-      for(let s of symbols) {
-        // for every date in symbol
-        for(let i = 0; i < s.date.length; i++) {
-          if (i === s.date.length-1) {
-            pastPrice.push({symbol: s.symbol, price: s.data[i]});
-            break;
-          }
-          // 1個月前的每一天 == 資料紀錄的日期
-          if (compareDate(d, new Date(s.date[i]*1000)) === 0) {
-            pastPrice.push({symbol: s.symbol, price: s.data[i]});
-            break;
-          }
-          // 假日 or 休市日
-          if (compareDate(d, new Date(s.date[i]*1000)) === -1 && compareDate(d, new Date(s.date[i+1]*1000)) === 1) {
-            pastPrice.push({symbol: s.symbol, price: s.data[i-1]});
-            break;
+    else {
+      performanceHistory = [];
+      // find first data date
+      const firstDate = new Date();
+      firstDate.setMonth(firstDate.getMonth() - monthsAgo);
+      firstDate.setDate(firstDate.getDate() - daysAgo);
+      const now = Date.now();
+      const compareDate = (a, b) => {
+        const ay = a.getFullYear();
+        const am = a.getMonth();
+        const ad = a.getDate();
+  
+        const by = b.getFullYear();
+        const bm = b.getMonth();
+        const bd = b.getDate();
+  
+        if (ay < by) return 1;
+        if (ay === by && am < bm) return 1;
+        if (ay === by && am === bm && ad < bd) return 1;
+        if (ay === by && am === bm && ad === bd) return 0;
+        return -1;
+      }
+      const symbols = JSON.parse(sessionStorage.getItem('symbols'));
+      // loop with every day
+      for(let d = firstDate; d <= now; d.setDate(d.getDate() + 1)) {
+        let currentAsset = 0;
+        // use request data to get every enterprise price in the past
+        const pastPrice = [];
+        // for every symbol
+        for(let s of symbols) {
+          // for every date in symbol
+          for(let i = 0; i < s.date.length; i++) {
+            if (i === s.date.length-1) {
+              pastPrice.push({symbol: s.symbol, price: s.data[i]});
+              break;
+            }
+            // 1個月前的每一天 == 資料紀錄的日期
+            if (compareDate(d, new Date(s.date[i]*1000)) === 0) {
+              pastPrice.push({symbol: s.symbol, price: s.data[i]});
+              break;
+            }
+            // 假日 or 休市日
+            if (compareDate(d, new Date(s.date[i]*1000)) === -1 && compareDate(d, new Date(s.date[i+1]*1000)) === 1) {
+              pastPrice.push({symbol: s.symbol, price: s.data[i-1]});
+              break;
+            }
           }
         }
-      }
-      // loop with every tradingHistory
-      for(let trade of dataBundle.tradingHistory) {
-        // 交易時間比現在還要早
-        if (compareDate(d, new Date(trade.tradingDate)) === -1 || compareDate(d, new Date(trade.tradingDate)) === 0) {
-          const pp = pastPrice.find(p => p.symbol === trade.symbol);
-          currentAsset += (trade.quantity * pp.price);
+        // loop with every tradingHistory
+        for(let trade of dataBundle.tradingHistory) {
+          // 交易時間比現在還要早
+          if (compareDate(d, new Date(trade.tradingDate)) === -1 || compareDate(d, new Date(trade.tradingDate)) === 0) {
+            const pp = pastPrice.find(p => p.symbol === trade.symbol);
+            currentAsset += (trade.quantity * pp.price);
+          }
         }
+        performanceHistory.push({x: d.toLocaleDateString(), y: currentAsset});
       }
-      performanceHistory.push({x: d.toLocaleDateString(), y: currentAsset});
+      sessionStorage.setItem(searchKey, JSON.stringify(performanceHistory));
+      setHisPerformance(performanceHistory);
     }
-    setHisPerformance(performanceHistory);
   }
 
   const isValidCSV = fileData => {
+    console.log('in inIsCsv');
     const checkList = ['Symbol', 'Purchase Price', 'Quantity', 'Trade Date'];
     for(let symbol of checkList) {
       if (fileData.indexOf(symbol) === -1) {
         setFileEnter(false);
-        toast.error('Please check your csv file.');
+        const errorMessage = 'csv檔缺少 "' + symbol + '" 欄位.';
+        toast.error(errorMessage);
         return false;
       }
     }
@@ -382,25 +393,27 @@ const App = () => {
   const onDrop = e => {
     e.preventDefault();
     e.stopPropagation();
-    // If dropped items aren't files, reject them
-    if (e.dataTransfer.items[0].kind === 'file') {
-      let file = e.dataTransfer.items[0].getAsFile();
-      const reader = new FileReader();
-      reader.onload = function () {
-        const dirtyRows = reader.result.split('\n');
-        const rows = [];
-        for(let drow of dirtyRows) {
-          rows.push(drow.split(','));
-        }
-        loadData(rows);
-      };
-      // start reading the file. When it is done, calls the onload event defined above.
-      reader.readAsBinaryString(file);
-    }
-    else {
-      toast.error('Please check your csv file');
-      setFileEnter(false);
-    }
+    const file = e.dataTransfer.items[0].getAsFile();
+    csvReader(file);
+  }
+
+  const onChange = e => {
+    const file = e.target.files[0];
+    csvReader(file);
+    e.target.value = "";
+  }
+
+  const csvReader = file => {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const dirtyRows = reader.result.split('\n');
+      const rows = [];
+      for(let drow of dirtyRows) {
+        rows.push(drow.split(','));
+      }
+      loadData(rows);
+    };
+    reader.readAsBinaryString(file);
   }
 
   const switchFocus = e => {
@@ -430,9 +443,7 @@ const App = () => {
         <label className="input-label">
           <span>📁 上傳檔案</span>
           <div style={{display: 'none'}}>
-            <CSVReader onFileLoaded={rows => {
-              loadData(rows);
-            }} />
+            <input type="file" onChange={onChange}/>
           </div>
         </label>
         <label className="input-label" onClick={demoData}>
