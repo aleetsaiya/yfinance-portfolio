@@ -5,13 +5,19 @@ import Info from './component/Info';
 import BarChart from './component/chart/BarChart';
 import LineChart from './component/chart/LineChart';
 import { ToastContainer, toast } from 'react-toastify';
+import { FaFileCsv } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import './App.css';
 
 const App = () => {
   const [dataBundle, setDataBundle] = useState({
-    infoData: {},
+    infoData: {
+      totalCost: 0,
+      myAsset: 0,
+      ROI: 0,
+      totalProfit: 0
+    },
     enterprises: [],
     tradingHistory: []
   });
@@ -24,8 +30,8 @@ const App = () => {
   }]);
 
   const holdingStockTable = {
-    headRow: ['代號', '股數', '單位成本', '最新價', '持股占比'],
-    targetData: ['symbol', 'totalQuantity', 'averageCost', 'currentPrice', 'holdingPercent']
+    headRow: ['代號', '股數', '單位成本', '損益', '占比'],
+    targetData: ['symbol', 'totalQuantity', 'averageCost', 'totalProfit', 'holdingPercent']
   };
   const tradingHistoryTable = {
     headRow: ['代號', '交易時間', '股數', '成交價', '金額'],
@@ -89,7 +95,6 @@ const App = () => {
       quantity: rows[0].indexOf('Quantity'),
       tradingDate: rows[0].indexOf('Trade Date'),
     }
-    console.log('in loadData');
     if (isValidCSV(rows[0])) { 
       for(let i = 1; i < rows.length; i++) {
         if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate])
@@ -121,7 +126,13 @@ const App = () => {
     for(let l of localData) {
       currentPrices[l.symbol] = l.data[l.data.length - 1];
     }
-
+    const findEnterprise = (ar, target) => {
+      for(let i = 0; i < ar.length; i++) {
+        if (ar[i]['symbol'] === target)
+          return i;
+      }
+      return false;
+    };
     for(let trading of tradingHistory) {
       const symbol = trading[indexBundle.symbol];
       // const currentPrice = parseFloat(trading[indexBundle.currentPrice]);
@@ -133,13 +144,6 @@ const App = () => {
       totalCost += (purchasePrice * quantity);
       totalAsset += (currentPrice * quantity);
 
-      const findEnterprise = (ar, target) => {
-        for(let i = 0; i < ar.length; i++) {
-          if (ar[i]['symbol'] === target)
-            return i;
-        }
-        return false;
-      };
       const index = findEnterprise(temp, symbol);
       if (index !== false) {
         temp[index]['tradingHistory'].push({
@@ -179,13 +183,13 @@ const App = () => {
     temp.sort((t1, t2) => {
       return t2.holdingPercent - t1.holdingPercent;
     })
-
+    
     return {
       infoData: {
-        totalCost: (Math.round((totalCost)*100) / 100).toString(),
-        myAsset: (Math.round((totalCost + totalProfit)*100) / 100).toString(),
-        ROI: (Math.round((totalProfit / totalCost) * 10000) / 100).toString() + '%',
-        totalProfit: totalProfit > 0 ? '+' + (Math.round((totalProfit)*100) / 100).toString() : (Math.round((totalProfit)*100) / 100).toString()
+        totalCost: totalCost,
+        myAsset: (totalCost + totalProfit),
+        ROI: (totalProfit / totalCost),
+        totalProfit: totalProfit
       },
       enterprises: temp
     };
@@ -246,7 +250,8 @@ const App = () => {
   const getEnterprisesWeight = () => {
     const temp = [];
     for(let enterprise of dataBundle.enterprises) {
-      temp.push(enterprise.holdingPercent);
+      const price = (enterprise.totalQuantity * enterprise.currentPrice).toFixed(2);
+      temp.push(parseFloat(price));
     }
     return temp;
   };
@@ -427,7 +432,7 @@ const App = () => {
 
   return (
     <div className='App'>
-      <h1>Portfolio</h1>
+      <h1>My Portfolio</h1>
       <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}></div>
       <div className={fileLoaded ? "hide":""}>
         <div 
@@ -438,7 +443,10 @@ const App = () => {
             onDrop={onDrop}
             style={fileEnter ? {backgroundColor: 'rgba(173, 216, 230, .5)'}:{backgroundColor: 'inherit'}}
         >
-          <div className="dropInfo">將 csv 檔拖曳至此</div>
+          <div className="dropInfo">
+            <div className="fileIcon"><FaFileCsv size={30}/></div>
+            <div>將 csv 檔拖曳至此</div>
+          </div>
         </div>
         <label className="input-label">
           <span>📁 上傳檔案</span>
@@ -452,10 +460,14 @@ const App = () => {
       </div>
       <main style={(fileLoaded && seconds <= 0) ? {}:{visibility: "hidden"}}>
         <div className="block-row" id="info">
-          <Info data={dataBundle.infoData.totalCost} title={'投入金額'}/>
-          <Info data={dataBundle.infoData.myAsset} title={'股票市值'}/>
-          <Info data={dataBundle.infoData.ROI} title={'報酬率'}  highlight={true}/>
-          <Info data={dataBundle.infoData.totalProfit} title={'總損益'}/>
+          <Info data={parseFloat(dataBundle.infoData.totalCost.toFixed(2))} title={'投入金額'}/>
+          <Info data={parseFloat(dataBundle.infoData.myAsset.toFixed(2))} title={'股票市值'}/>
+          <Info data={parseFloat((dataBundle.infoData.ROI*100).toFixed(2)) + '%'} title={'報酬率'}  highlight={true}/>
+          <Info data={parseFloat(dataBundle.infoData.totalProfit) < 0 ?
+            parseFloat(parseFloat(dataBundle.infoData.totalProfit).toFixed(2)) :
+            '+' + parseFloat(parseFloat(dataBundle.infoData.totalProfit).toFixed(2))}
+            title={'總損益'}
+          />
         </div>
         <div className="block-title res-title">
           <h3>持股狀況</h3>

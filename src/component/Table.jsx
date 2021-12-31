@@ -27,6 +27,18 @@ const Table = props => {
             if (target === 'holdingPercent') {
               return <td key={row[target].toString() + '-' + index.toString()}>{row[target] + '%'}</td>
             }
+            if (target === 'totalProfit') {
+              const green = {color: '#76c68f'};
+              const red = {color: '#F15B46'};
+              return (
+                <td 
+                  key={row[target].toString() + '-' + index.toString()}
+                  style={row[target] < 0 ? red : green}
+                >
+                  {row[target] < 0 ? row[target].toFixed(2) : '+' + row[target].toFixed(2)}
+                </td>
+              )
+            }
             return <td key={row[target].toString() + '-' + index.toString()}>
               {typeof row[target] === 'number' ? Round(row[target], 2) : row[target]}
             </td>;

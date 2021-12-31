@@ -56,10 +56,11 @@ button {
 }
 
 .drag-file-block {
+  position: relative;
   margin: 0 auto;
   width: 70%;
-  height: 300px;
-  border: dashed 3px #fff;
+  height: 50vh;
+  border: dashed 3px #D8D8D8;
 }
 
 .drag-file-block div {
@@ -67,6 +68,11 @@ button {
 }
 
 .dropInfo {
+  color: #D8D8D8;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -70%);
   margin-top: 15px;
   font-weight: 900;
   font-size: 18px;
@@ -126,6 +132,10 @@ button {
 
 .hide {
   display: none;
+}
+
+.fileIcon {
+  margin-bottom: 10px;
 }
 
 @keyframes rotate{
