@@ -433,7 +433,7 @@ const App = () => {
   }
 
   return (
-    <div className='App'>
+    <div className='App' style={fileLoaded ? {} : {maxHeight: '100vh', overflow: 'hidden'}}>
       <h1>My Portfolio</h1>
       <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}></div>
       <div className={fileLoaded ? "hide":""}>
