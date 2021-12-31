@@ -3,10 +3,16 @@
 
 作品連結: [https://aleetsaiya.github.io/yfinance-portfolio](https://aleetsaiya.github.io/yfinance-portfolio)
 
+## 功能
+- [x] 利用 Yahoo Finance API 取得最新價格
+- [x] 分析各股票佔整體比例  
+- [x] 繪製帳戶金額成長走勢
+- [x] 柱狀圖對比各股票績效
+
 ## 操作方式
 > *Yahoo Finance Portfolio*: [https://finance.yahoo.com/portfolios](https://finance.yahoo.com/portfolios)  
 
-從 Yahoo Finance Portfolio 中匯出 `csv` 檔，將匯出的 `csv` 檔上傳。  
+資料來源可以選擇從 Yahoo Finance Portfolio 中匯出 `csv` 檔，將匯出的 `csv` 檔上傳。或是依照底下描述的資料格式，將每筆交易紀錄填寫至自己創建的 `csv` 檔中。
 
 
 ## 輸入資料格式
