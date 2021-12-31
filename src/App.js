@@ -89,13 +89,16 @@ const App = () => {
 
   const loadData = async rows => {
     const data = [];
-    const indexBundle = {
-      symbol: rows[0].indexOf('Symbol'),
-      purchasePrice: rows[0].indexOf('Purchase Price'),
-      quantity: rows[0].indexOf('Quantity'),
-      tradingDate: rows[0].indexOf('Trade Date'),
+    for(let i = 0; i < rows[0].length; i++) {
+      rows[0][i] = rows[0][i].trim();
     }
     if (isValidCSV(rows[0])) { 
+      const indexBundle = {
+        symbol: rows[0].indexOf('Symbol'),
+        purchasePrice: rows[0].indexOf('Purchase Price'),
+        quantity: rows[0].indexOf('Quantity'),
+        tradingDate: rows[0].indexOf('Trade Date'),
+      }
       for(let i = 1; i < rows.length; i++) {
         if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate])
           data.push(rows[i]);
@@ -365,7 +368,6 @@ const App = () => {
   }
 
   const isValidCSV = fileData => {
-    console.log('in inIsCsv');
     const checkList = ['Symbol', 'Purchase Price', 'Quantity', 'Trade Date'];
     for(let symbol of checkList) {
       if (fileData.indexOf(symbol) === -1) {
