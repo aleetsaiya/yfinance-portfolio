@@ -443,7 +443,7 @@ const App = () => {
         <label className="input-label">
           <span>📁 上傳檔案</span>
           <div style={{display: 'none'}}>
-            <input type="file" onChange={onChange}/>
+            <input type="file" accept='.csv' onChange={onChange}/>
           </div>
         </label>
         <label className="input-label" onClick={demoData}>
