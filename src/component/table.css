@@ -60,7 +60,7 @@ table + .paging {
     }
 }
 
-@media only screen and (max-width: 780px) {
+@media only screen and (max-width: 980px) {
     table {
         margin-top: 50px;
         font-size: 10px;
