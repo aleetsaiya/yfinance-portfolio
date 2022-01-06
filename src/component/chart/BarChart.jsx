@@ -11,7 +11,7 @@ const BarChart = props => {
         yaxis: {
             labels: {
                 formatter: function (y) {
-                    return y.toFixed(2) + "%";
+                    return y + "%";
                 }
             }
         },

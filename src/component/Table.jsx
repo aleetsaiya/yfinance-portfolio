@@ -27,21 +27,26 @@ const Table = props => {
             if (target === 'holdingPercent') {
               return <td key={row[target].toString() + '-' + index.toString()}>{row[target] + '%'}</td>
             }
-            if (target === 'totalProfit') {
+            if (target === 'totalProfit' || target === 'profitPercent') {
               const green = {color: '#76c68f'};
               const red = {color: '#F15B46'};
+              let msg = row[target] < 0 ? row[target].toFixed(2) : '+' + row[target].toFixed(2);
+              if (target === 'profitPercent')
+                msg += '%';
               return (
                 <td 
                   key={row[target].toString() + '-' + index.toString()}
                   style={row[target] < 0 ? red : green}
                 >
-                  {row[target] < 0 ? row[target].toFixed(2) : '+' + row[target].toFixed(2)}
+                  {msg}
                 </td>
               )
             }
-            return <td key={row[target].toString() + '-' + index.toString()}>
-              {typeof row[target] === 'number' ? Round(row[target], 2) : row[target]}
-            </td>;
+            return (
+              <td key={row[target].toString() + '-' + index.toString()}>
+                {typeof row[target] === 'number' ? Round(row[target], 2) : row[target]}
+              </td>
+            );
           })
         }
       </tr>
@@ -54,7 +59,9 @@ const Table = props => {
       <table>
         <thead>
           <tr>
-            {headRow.map(head => <th key={head}>{head}</th>)}
+            {headRow.map(head => {
+                return <th key={head} style={head === '損益' ? {cursor: 'pointer'}:{}}>{head}</th>;
+            })}
           </tr>
         </thead>
         <tbody>

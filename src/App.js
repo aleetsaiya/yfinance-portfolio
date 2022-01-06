@@ -29,10 +29,10 @@ const App = () => {
     y: 100
   }]);
 
-  const holdingStockTable = {
+  const [holdingStockTable, setHoldingStockTable] = useState({
     headRow: ['代號', '股數', '單位成本', '損益', '占比'],
     targetData: ['symbol', 'totalQuantity', 'averageCost', 'totalProfit', 'holdingPercent']
-  };
+  });
   const tradingHistoryTable = {
     headRow: ['代號', '交易時間', '股數', '成交價', '金額'],
     targetData: ['symbol', 'tradingDate', 'quantity', 'purchasePrice', 'totalCost']
@@ -180,6 +180,11 @@ const App = () => {
       }
       t['totalProfit'] = profit;
       totalProfit += profit;
+    }
+
+    // set enterprise's profit percent
+    for(let t of temp) {
+      t['profitPercent'] = Math.round((t.totalProfit / t.totalCost)*10000)/100;
     }
 
     // sort emterprise by holdingPercent
@@ -432,6 +437,28 @@ const App = () => {
     e.target.classList.add('focus');
   }
 
+  const handleTableClick = e => {
+    if (e.target.textContent !== '損益')
+      return;
+    
+    if (holdingStockTable.targetData.includes('profitPercent')) {
+      setHoldingStockTable(
+        {
+          headRow: holdingStockTable.headRow,
+          targetData: ['symbol', 'totalQuantity', 'averageCost', 'totalProfit', 'holdingPercent']
+        }
+      );
+    }
+    else {
+      setHoldingStockTable(
+        {
+          headRow: holdingStockTable.headRow,
+          targetData: ['symbol', 'totalQuantity', 'averageCost', 'profitPercent', 'holdingPercent']
+        }
+      );
+    }
+  }
+
   return (
     <div className='App' style={fileLoaded ? {} : {maxHeight: '100vh', overflow: 'hidden', paddingLeft: '6px', paddingRight: '6px'}}>
       <h1>My Portfolio</h1>
@@ -481,7 +508,7 @@ const App = () => {
               labels={getEnterprisesSymbol().length === 0 ? ['stock1', 'stock2', 'stock3'] : getEnterprisesSymbol()}
             />
           </div>
-          <div className="right">
+          <div className="right" onClick={handleTableClick}>
             <Table headRow={holdingStockTable.headRow} dataRows={dataBundle.enterprises} targetData={holdingStockTable.targetData}/>
           </div>
         </div>
