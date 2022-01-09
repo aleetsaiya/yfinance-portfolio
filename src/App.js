@@ -39,6 +39,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    console.log('in useEffect');
     document.title = "Portfolio";
     if (fileLoaded && seconds > 0) {
       setTimeout(() => setSeconds(seconds => seconds - 1), 1000);
