@@ -60,7 +60,7 @@ button {
   margin: 0 auto;
   width: 70%;
   height: 50vh;
-  border: dashed 3px #D8D8D8;
+  border: dashed 3px #d8d8d8;
 }
 
 .drag-file-block div {
@@ -68,7 +68,7 @@ button {
 }
 
 .dropInfo {
-  color: #D8D8D8;
+  color: #d8d8d8;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -91,29 +91,29 @@ button {
 }
 
 .input-label:hover {
-  background-color: #1C4E80;
+  background-color: #1c4e80;
 }
 
-.input-label > *{
+.input-label > * {
   margin: 0 5px;
 }
 
-.csvIcon{
+.csvIcon {
   width: 10px;
 }
 
 .load {
-	width: 30px;
-	height: 30px;
-	margin: 0 auto;
-	border:solid 3px #80afdf;
-	border-radius: 50%;
-	border-right-color: transparent;
-	border-bottom-color: transparent;
-  animation-name: rotate; 
-  animation-duration: .3s; 
-  animation-iteration-count:  infinite;
-  animation-timing-function:  linear; 
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+  border: solid 3px #80afdf;
+  border-radius: 50%;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  animation-name: rotate;
+  animation-duration: 0.3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 .timeButton.focus {
@@ -138,11 +138,11 @@ button {
   margin-bottom: 10px;
 }
 
-@keyframes rotate{
-  0%{
+@keyframes rotate {
+  0% {
     transform: rotate(0deg);
   }
-  100%{
+  100% {
     transform: rotate(360deg);
   }
 }
@@ -152,7 +152,7 @@ button {
     margin-top: 30px;
     text-align: center;
   }
-  #info > *{
+  #info > * {
     margin-bottom: 25px;
   }
   .App {
@@ -182,13 +182,13 @@ button {
     width: 20px;
     height: 20px;
     margin: 0 auto;
-    border:solid 2px #80afdf;
+    border: solid 2px #80afdf;
     border-radius: 50%;
     border-right-color: transparent;
     border-bottom-color: transparent;
-    animation-name: rotate; 
-    animation-duration: .3s; 
-    animation-iteration-count:  infinite;
-    animation-timing-function:  linear; 
+    animation-name: rotate;
+    animation-duration: 0.3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
 }

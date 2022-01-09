@@ -1,61 +1,62 @@
-import React from 'react';
-import ReactApexChart from 'react-apexcharts';
+import React from 'react'
+import ReactApexChart from 'react-apexcharts'
 
-const BarChart = props => {
-    const {series, labels} = props;
-    const defaultSetting = {
-        chart: {
-            type: 'bar',
-            foreColor: '#fff',
-        },
-        yaxis: {
-            labels: {
-                formatter: function (y) {
-                    return y + "%";
-                }
-            }
-        },
-        plotOptions: {
-            bar: {
-                colors: {
-                    ranges: [{
-                        from: Number.NEGATIVE_INFINITY,
-                        to: 0,
-                        color: '#F15B46'
-                    }, {
-                        from: 0,
-                        to: Number.MAX_SAFE_INTEGER,
-                        color: '#76c68f'
-                    }]
-                },
-                columnWidth: '45%',
-            }
-        },
-        dataLabels: {
-            enabled: false,
-        },
-    };
-
-    return (
-        <ReactApexChart 
-          options={
+const BarChart = (props) => {
+  const { series, labels } = props
+  const defaultSetting = {
+    chart: {
+      type: 'bar',
+      foreColor: '#fff'
+    },
+    yaxis: {
+      labels: {
+        formatter: function (y) {
+          return y + '%'
+        }
+      }
+    },
+    plotOptions: {
+      bar: {
+        colors: {
+          ranges: [
             {
-            xaxis: {
-                categories: labels
+              from: Number.NEGATIVE_INFINITY,
+              to: 0,
+              color: '#F15B46'
             },
-              ...defaultSetting
-            }
-          } 
-          series={[
             {
-              name: 'Profit',
-              data: series
+              from: 0,
+              to: Number.MAX_SAFE_INTEGER,
+              color: '#76c68f'
             }
-          ]} 
-          type="bar"
-          height="240px"
-        />
-    )
-};
+          ]
+        },
+        columnWidth: '45%'
+      }
+    },
+    dataLabels: {
+      enabled: false
+    }
+  }
 
-export default BarChart;
+  return (
+    <ReactApexChart
+      options={{
+        xaxis: {
+          categories: labels
+        },
+        ...defaultSetting
+      }}
+      series={[
+        {
+          name: 'Profit',
+          data: series
+        }
+      ]}
+      type="bar"
+      height="240px"
+    />
+  )
+}
+
+export default BarChart

@@ -1,79 +1,81 @@
 table {
-    font-size: 16px;
-    border-collapse: collapse;
-    margin: 0 auto;
-    width: 100%;
+  font-size: 16px;
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: 100%;
 }
 
 table > thead {
-    background-color: #2d3135;
+  background-color: #2d3135;
 }
 
-table th, td {
-    text-align: center; 
-    vertical-align: middle;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 80px;
+table th,
+td {
+  text-align: center;
+  vertical-align: middle;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 80px;
 }
 
 table th {
-    padding-top: 3px;
-    padding-bottom: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 table + .paging {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 15px;
-    margin-right: 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  margin-right: 10px;
 }
 
 .paging .page {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .paging .page:hover {
-    color: rgb(212, 212, 212);
+  color: rgb(212, 212, 212);
 }
 
 .paging .page:disabled {
-    cursor: default;
-    color: gray;
+  cursor: default;
+  color: gray;
 }
 
-
 @media only screen and (max-width: 1400px) {
-    table {
-        font-size: 12px;
-    }
-    table th, td {
-        padding-left: 10px;
-        padding-right: 10px;
-        width: 50px;
-    }
-    table th {
-        padding-top: 3px;
-        padding-bottom: 3px;
-    }
+  table {
+    font-size: 12px;
+  }
+  table th,
+  td {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 50px;
+  }
+  table th {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
 }
 
 @media only screen and (max-width: 980px) {
-    table {
-        margin-top: 50px;
-        font-size: 10px;
-    }
-    table th, td {
-        padding-left: 3px;
-        padding-right: 3px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-        width: 50px;
-    }
-    table th {
-        padding-top: 3px;
-        padding-bottom: 3px;
-    }
+  table {
+    margin-top: 50px;
+    font-size: 10px;
+  }
+  table th,
+  td {
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 50px;
+  }
+  table th {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
 }
