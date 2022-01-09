@@ -21,9 +21,11 @@ const App = () => {
     enterprises: [],
     tradingHistory: []
   });
-  const [fileLoaded, setFileLoaded] = useState(false);
+  const [reqState, setReqState] = useState({
+    reqSend: false,
+    fileLoaded: false
+  });
   const [fileEnter, setFileEnter] = useState(false);
-  const [seconds, setSeconds] = useState(2);
   const [hisPerformance, setHisPerformance] = useState([{
     x: new Date(1640269800*1000).toLocaleString(),
     y: 100
@@ -39,56 +41,30 @@ const App = () => {
   };
 
   useEffect(() => {
+    console.log('In effect');
     document.title = "Portfolio";
-    if (fileLoaded && seconds > 0) {
-      setTimeout(() => setSeconds(seconds => seconds - 1), 1000);
-    }
-  });
-
-  useEffect(() => {
-    if (dataBundle.tradingHistory.length !== 0) {
+    if (reqState.fileLoaded) {
       getHisPerformance(0, 7);
     }
   }, [dataBundle]);
 
   const demoData = async () => {
-    setFileLoaded(true);
-    await requestFinanceData();
+    await requestFinanceData(['MSFT', 'SMH', 'QQQ', 'VOO']);
     initData(
       [
-        [
-          "SMH","300","2021/12/6","16:00 EST","-1.1499939","299.57","301.38","290.51","5105964","20211206","299.02","0.96984","","","",""
-        ],
-        [
-          "MSFT","326.19","2021/12/6","16:00 EST","3.1799927","323.95","327.42","319.23","30032556","20211126","334.11","0.29929","","","",""
-        ],
-        [
-          "MSFT","326.19","2021/12/6","16:00 EST","3.1799927","323.95","327.42","319.23","30032556","20211206","324.71","1.75542","","","",""
-        ],
-        [
-          "VOO","421.82","2021/12/6","16:00 EST","4.98001","419.41","423.64","417","7124862","20211126","424.96","0.35298","","","",""
-        ],
-        [
-          "VOO","421.82","2021/12/6","16:00 EST","4.98001","419.41","423.64","417","7124862","20211206","419.85","2.71527","","","",""
-        ],
-        [
-          "QQQ","386.2","2021/12/6","16:00 EST","3.0700073","383.63","387.6","379.31","64706783","20211126","396.07","0.25248","","","",""
-        ],
-        [
-          "QQQ","386.2","2021/12/6","16:00 EST","3.0700073","383.63","387.6","379.31","64706783","20211206","384.08","2.23912","","","",""
-        ]
+        ["SMH","300","2021/12/6","16:00 EST","-1.1499939","299.57","301.38","290.51","5105964","20211206","299.02","0.96984","","","",""],
+        ["MSFT","326.19","2021/12/6","16:00 EST","3.1799927","323.95","327.42","319.23","30032556","20211126","334.11","0.29929","","","",""],
+        ["MSFT","326.19","2021/12/6","16:00 EST","3.1799927","323.95","327.42","319.23","30032556","20211206","324.71","1.75542","","","",""],
+        ["VOO","421.82","2021/12/6","16:00 EST","4.98001","419.41","423.64","417","7124862","20211126","424.96","0.35298","","","",""],
+        ["VOO","421.82","2021/12/6","16:00 EST","4.98001","419.41","423.64","417","7124862","20211206","419.85","2.71527","","","",""],
+        ["QQQ","386.2","2021/12/6","16:00 EST","3.0700073","383.63","387.6","379.31","64706783","20211126","396.07","0.25248","","","",""],
+        ["QQQ","386.2","2021/12/6","16:00 EST","3.0700073","383.63","387.6","379.31","64706783","20211206","384.08","2.23912","","","",""]
       ],
-      {
-        "symbol": 0,
-        "purchasePrice": 10,
-        "quantity": 11,
-        "tradingDate": 9
-      }
+      {"symbol": 0,"purchasePrice": 10,"quantity": 11,"tradingDate": 9}
     );
   }
 
   const loadData = async rows => {
-    const data = [];
     for(let i = 0; i < rows[0].length; i++) {
       rows[0][i] = rows[0][i].trim();
     }
@@ -99,12 +75,18 @@ const App = () => {
         quantity: rows[0].indexOf('Quantity'),
         tradingDate: rows[0].indexOf('Trade Date'),
       }
+      // store which enterprise need to request data
+      const symbols = [];
+      // store valid trading history in csv
+      const data = [];
       for(let i = 1; i < rows.length; i++) {
-        if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate])
+        if (rows[i][indexBundle.symbol] && rows[i][indexBundle.purchasePrice] && rows[i][indexBundle.quantity] && rows[i][indexBundle.tradingDate]) {
           data.push(rows[i]);
+          if (!symbols.find(s => s === rows[i][indexBundle.symbol].trim()))
+            symbols.push(rows[i][indexBundle.symbol].trim());
+        }
       }
-      setFileLoaded(true);
-      await requestFinanceData();
+      await requestFinanceData(symbols);
       initData(data, indexBundle);
     }
   };
@@ -272,7 +254,14 @@ const App = () => {
     return temp;
   };
 
-  const requestFinanceData = async () => {
+  const requestFinanceData = async (s) => {
+    // Input "symbols" then traslate to string seperate by ','
+    let ss = "";
+    for(let st of s) {
+      ss += (st.trim() + ",");
+    }
+    ss = ss.slice(0, ss.length-1);
+
     const options = {
       method: 'GET',
       url: 'https://yfapi.net/v8/finance/spark',
@@ -280,11 +269,13 @@ const App = () => {
         'x-api-key': 'auNxCyh1Gf66HIXod3SN5aeAVI6JUB37Kd5iClYh'
       },
       params: {
-        symbols: "MSFT,VOO,QQQ,SMH",
+        symbols: ss,
         interval: "1d",
         range: "1y"
       }
     };
+
+    setReqState({reqSend: true, fileLoaded: false});
     return axios.request(options).then(response => {
       const data = response.data;
       console.log('response', data);
@@ -295,7 +286,7 @@ const App = () => {
       }
       sessionStorage.clear();
       sessionStorage.setItem('symbols', JSON.stringify(symbols));
-      // getHisPerformance(0, 7);
+      setReqState({reqSend: true, fileLoaded: true});
     }).catch(error => {
       console.log(error);
       toast.error('請求資料時發生錯誤.');
@@ -460,10 +451,10 @@ const App = () => {
   }
 
   return (
-    <div className='App' style={fileLoaded ? {} : {maxHeight: '100vh', overflow: 'hidden', paddingLeft: '6px', paddingRight: '6px'}}>
+    <div className='App' style={reqState.fileLoaded ? {} : {maxHeight: '100vh', overflow: 'hidden', paddingLeft: '6px', paddingRight: '6px'}}>
       <h1>My Portfolio</h1>
-      <div className={(!fileLoaded) || (fileLoaded && seconds <= 0) ? "hide":"load"}></div>
-      <div className={fileLoaded ? "hide":""}>
+      <div className={(!reqState.fileLoaded && reqState.reqSend) ? "load":"hide"}></div>
+      <div className={reqState.reqSend ? "hide":""}>
         <div 
             className="drag-file-block"
             onDragEnter={onDragEnter}
@@ -487,7 +478,7 @@ const App = () => {
           <span>💡 使用範例</span>
         </label>
       </div>
-      <main style={(fileLoaded && seconds <= 0) ? {}:{visibility: "hidden"}}>
+      <main className={reqState.fileLoaded ? "":"hide"}>
         <div className="block-row" id="info">
           <Info data={parseFloat(dataBundle.infoData.totalCost.toFixed(2))} title={'投入金額'}/>
           <Info data={parseFloat(dataBundle.infoData.myAsset.toFixed(2))} title={'股票市值'}/>
