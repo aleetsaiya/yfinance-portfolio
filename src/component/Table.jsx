@@ -8,9 +8,8 @@ const Table = props => {
   const movePage = offset => {
     if (page === 0 && offset === -1)
       return;    
-    if ((page + offset) * 5 > dataRows.length)
+    if ((page + offset) * 5 >= dataRows.length)
       return;
-
     setPage(page + offset);
   };
 
@@ -22,10 +21,10 @@ const Table = props => {
           targetData.map(target => {
             if (target === 'averageCost') {
               const aveCost = Round(row['totalCost'] / row['totalQuantity'], 2);
-              return <td key={aveCost.toString() + '-' + index.toString()}> {aveCost} </td>
+              return <td key={aveCost.toString() + '-' + index.toString() + '-' + Math.random().toFixed(3)}> {aveCost} </td>
             }
             if (target === 'holdingPercent') {
-              return <td key={row[target].toString() + '-' + index.toString()}>{row[target] + '%'}</td>
+              return <td key={row[target].toString() + '-' + index.toString() + '-' + Math.random().toFixed(3)}>{row[target] + '%'}</td>
             }
             if (target === 'totalProfit' || target === 'profitPercent') {
               const green = {color: '#76c68f'};
@@ -35,7 +34,7 @@ const Table = props => {
                 msg += '%';
               return (
                 <td 
-                  key={row[target].toString() + '-' + index.toString()}
+                  key={row[target].toString() + '-' + index.toString() + '-' + Math.random().toFixed(3)}
                   style={row[target] < 0 ? red : green}
                 >
                   {msg}
@@ -43,7 +42,7 @@ const Table = props => {
               )
             }
             return (
-              <td key={row[target].toString() + '-' + index.toString()}>
+              <td key={row[target].toString() + '-' + index.toString() + '-' + Math.random().toFixed(3)}>
                 {typeof row[target] === 'number' ? Round(row[target], 2) : row[target]}
               </td>
             );
@@ -70,7 +69,7 @@ const Table = props => {
       </table>
       <div className="paging">
         <button className="page" onClick={() => movePage(-1)} disabled={page === 0 ? 'disabled':''}>{'<'}</button>
-        <button className="page" onClick={() => movePage(1)} disabled={((page + 1) * 5) > dataRows.length ? 'disabled':''}>{'>'}</button>
+        <button className="page" onClick={() => movePage(1)} disabled={(page + 1) * 5 >= dataRows.length ? 'disabled':''}>{'>'}</button>
       </div>
     </div>
   );
