@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
+import PropTypes from 'prop-types'
 
 const BarChart = (props) => {
   const { series, labels } = props
@@ -57,6 +58,11 @@ const BarChart = (props) => {
       height="240px"
     />
   )
+}
+
+BarChart.propTypes = {
+  series: PropTypes.arrayOf(PropTypes.number),
+  labels: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default BarChart

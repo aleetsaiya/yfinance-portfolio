@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import './table.css'
+import PropTypes from 'prop-types'
 
 const Table = (props) => {
   const { headRow, dataRows, targetData } = props
@@ -130,6 +131,12 @@ const Table = (props) => {
       </div>
     </div>
   )
+}
+
+Table.propTypes = {
+  headRow: PropTypes.arrayOf(PropTypes.string),
+  dataRows: PropTypes.arrayOf(PropTypes.object),
+  targetData: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default Table

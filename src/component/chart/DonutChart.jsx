@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
+import PropTypes from 'prop-types'
 
 const DonutChart = (props) => {
   const { series, labels } = props
@@ -63,6 +64,11 @@ const DonutChart = (props) => {
       height="200px"
     />
   )
+}
+
+DonutChart.propTypes = {
+  series: PropTypes.arrayOf(PropTypes.number),
+  labels: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default DonutChart

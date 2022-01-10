@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
+import PropTypes from 'prop-types'
 
 const LineChart = (props) => {
   const { data } = props
@@ -43,6 +44,15 @@ const LineChart = (props) => {
       style={{ color: '#000' }}
       height="300px"
     />
+  )
+}
+
+LineChart.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      x: PropTypes.string,
+      y: PropTypes.number
+    })
   )
 }
 

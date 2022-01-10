@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Info = (props) => {
   const { title, data } = props
@@ -13,6 +14,11 @@ const Info = (props) => {
       </div>
     </div>
   )
+}
+
+Info.propTypes = {
+  title: PropTypes.string,
+  data: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 export default Info
