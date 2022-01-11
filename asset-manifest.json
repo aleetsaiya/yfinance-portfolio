@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/yfinance-portfolio/static/css/main.1952b8a0.chunk.css",
-    "main.js": "/yfinance-portfolio/static/js/main.b6ea70a7.chunk.js",
-    "main.js.map": "/yfinance-portfolio/static/js/main.b6ea70a7.chunk.js.map",
+    "main.css": "/yfinance-portfolio/static/css/main.e071fdb5.chunk.css",
+    "main.js": "/yfinance-portfolio/static/js/main.85becd57.chunk.js",
+    "main.js.map": "/yfinance-portfolio/static/js/main.85becd57.chunk.js.map",
     "runtime-main.js": "/yfinance-portfolio/static/js/runtime-main.cffd751d.js",
     "runtime-main.js.map": "/yfinance-portfolio/static/js/runtime-main.cffd751d.js.map",
     "static/css/2.58a45539.chunk.css": "/yfinance-portfolio/static/css/2.58a45539.chunk.css",
-    "static/js/2.99874e2c.chunk.js": "/yfinance-portfolio/static/js/2.99874e2c.chunk.js",
-    "static/js/2.99874e2c.chunk.js.map": "/yfinance-portfolio/static/js/2.99874e2c.chunk.js.map",
+    "static/js/2.b7bd9c99.chunk.js": "/yfinance-portfolio/static/js/2.b7bd9c99.chunk.js",
+    "static/js/2.b7bd9c99.chunk.js.map": "/yfinance-portfolio/static/js/2.b7bd9c99.chunk.js.map",
     "index.html": "/yfinance-portfolio/index.html",
     "static/css/2.58a45539.chunk.css.map": "/yfinance-portfolio/static/css/2.58a45539.chunk.css.map",
-    "static/css/main.1952b8a0.chunk.css.map": "/yfinance-portfolio/static/css/main.1952b8a0.chunk.css.map",
-    "static/js/2.99874e2c.chunk.js.LICENSE.txt": "/yfinance-portfolio/static/js/2.99874e2c.chunk.js.LICENSE.txt"
+    "static/css/main.e071fdb5.chunk.css.map": "/yfinance-portfolio/static/css/main.e071fdb5.chunk.css.map",
+    "static/js/2.b7bd9c99.chunk.js.LICENSE.txt": "/yfinance-portfolio/static/js/2.b7bd9c99.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.cffd751d.js",
     "static/css/2.58a45539.chunk.css",
-    "static/js/2.99874e2c.chunk.js",
-    "static/css/main.1952b8a0.chunk.css",
-    "static/js/main.b6ea70a7.chunk.js"
+    "static/js/2.b7bd9c99.chunk.js",
+    "static/css/main.e071fdb5.chunk.css",
+    "static/js/main.85becd57.chunk.js"
   ]
 }
