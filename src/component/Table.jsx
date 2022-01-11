@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './table.css'
 import PropTypes from 'prop-types'
 
 const Table = (props) => {

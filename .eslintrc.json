@@ -12,7 +12,8 @@
             "jsx": true
         },
         "ecmaVersion": 12,
-        "sourceType": "module"
+        "sourceType": "module",
+        "allowImportExportEverywhere": true //ignore eslint error: 'import' and 'export' may only appear at the top level
     },
     "plugins": [
         "react"
