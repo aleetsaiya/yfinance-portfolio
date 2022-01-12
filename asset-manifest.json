@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/yfinance-portfolio/static/css/main.973e006b.chunk.css",
-    "main.js": "/yfinance-portfolio/static/js/main.a83c6337.chunk.js",
-    "main.js.map": "/yfinance-portfolio/static/js/main.a83c6337.chunk.js.map",
+    "main.css": "/yfinance-portfolio/static/css/main.84fbf6ba.chunk.css",
+    "main.js": "/yfinance-portfolio/static/js/main.c50402f5.chunk.js",
+    "main.js.map": "/yfinance-portfolio/static/js/main.c50402f5.chunk.js.map",
     "runtime-main.js": "/yfinance-portfolio/static/js/runtime-main.cffd751d.js",
     "runtime-main.js.map": "/yfinance-portfolio/static/js/runtime-main.cffd751d.js.map",
     "static/css/2.58a45539.chunk.css": "/yfinance-portfolio/static/css/2.58a45539.chunk.css",
@@ -10,14 +10,14 @@
     "static/js/2.ee76a324.chunk.js.map": "/yfinance-portfolio/static/js/2.ee76a324.chunk.js.map",
     "index.html": "/yfinance-portfolio/index.html",
     "static/css/2.58a45539.chunk.css.map": "/yfinance-portfolio/static/css/2.58a45539.chunk.css.map",
-    "static/css/main.973e006b.chunk.css.map": "/yfinance-portfolio/static/css/main.973e006b.chunk.css.map",
+    "static/css/main.84fbf6ba.chunk.css.map": "/yfinance-portfolio/static/css/main.84fbf6ba.chunk.css.map",
     "static/js/2.ee76a324.chunk.js.LICENSE.txt": "/yfinance-portfolio/static/js/2.ee76a324.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.cffd751d.js",
     "static/css/2.58a45539.chunk.css",
     "static/js/2.ee76a324.chunk.js",
-    "static/css/main.973e006b.chunk.css",
-    "static/js/main.a83c6337.chunk.js"
+    "static/css/main.84fbf6ba.chunk.css",
+    "static/js/main.c50402f5.chunk.js"
   ]
 }
