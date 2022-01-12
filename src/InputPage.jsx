@@ -15,6 +15,7 @@ const InputPage = (props) => {
   } = props
   return (
     <div className={show ? '' : 'hide'}>
+      <h2>輸入檔案</h2>
       <div
         className="drag-file-block"
         onDragEnter={onDragEnter}

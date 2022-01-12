@@ -5,8 +5,9 @@ import Loading from './component/Loading'
 import 'react-toastify/dist/ReactToastify.css'
 import axios from 'axios'
 import { getSample, getEnterprisesData, getTradingHistory } from './dataStorage'
-import './App.css'
 import MainPage from './MainPage'
+import NavBar from './component/NavBar'
+import './App.css'
 
 const App = () => {
   const [dataBundle, setDataBundle] = useState({
@@ -24,6 +25,7 @@ const App = () => {
     fileLoaded: false
   })
   const [fileEnter, setFileEnter] = useState(false)
+  const [currentPage, setCurrentPage] = useState('input-page')
 
   const demo = async () => {
     const sample = getSample()
@@ -72,6 +74,7 @@ const App = () => {
       tradingHistory: tradingHistory,
       infoData: infoData
     })
+    setCurrentPage('analyze-page')
   }
 
   const requestFinanceData = async (s) => {
@@ -128,7 +131,7 @@ const App = () => {
     for (const symbol of checkList) {
       if (fileData.indexOf(symbol) === -1) {
         setFileEnter(false)
-        const errorMessage = 'csv檔缺少 "' + symbol + '" 欄位.'
+        const errorMessage = 'csv 檔缺少 " ' + symbol + ' " 欄位.'
         toast.error(errorMessage)
         return false
       }
@@ -179,44 +182,58 @@ const App = () => {
     reader.readAsBinaryString(file)
   }
 
-  const inputPageAppStyle = {
+  const handleNavClick = (e) => {
+    const page = e.target.dataset.page
+    // error check
+    if (page === currentPage) return
+    if (page === 'analyze-page' && !reqState.fileLoaded) {
+      toast.warn('請先輸入交易資料')
+      return
+    }
+    setCurrentPage(page)
+  }
+
+  const hideOverflowStyle = {
     maxHeight: '100vh',
-    overflow: 'hidden',
-    paddingLeft: '6px',
-    paddingRight: '6px'
+    overflow: 'hidden'
   }
 
   return (
-    <div className="App" style={reqState.fileLoaded ? {} : inputPageAppStyle}>
-      <h1>My Portfolio</h1>
-      <Loading show={!reqState.fileLoaded && reqState.reqSend} />
-      <InputPage
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleFileDrop}
-        onChange={handleFileChange}
-        fileEnter={fileEnter}
-        show={!reqState.reqSend}
-        demo={demo}
-      />
-      <MainPage
-        show={reqState.fileLoaded}
-        dataBundle={dataBundle}
-        reqState={reqState}
-      />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        theme="dark"
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+    <div style={currentPage === 'input-page' ? hideOverflowStyle : {}}>
+      <NavBar onClick={handleNavClick} currentPage={currentPage} />
+      <div className="App">
+        <Loading show={!reqState.fileLoaded && reqState.reqSend} />
+        <InputPage
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleFileDrop}
+          onChange={handleFileChange}
+          fileEnter={fileEnter}
+          show={
+            !reqState.reqSend ||
+            (currentPage === 'input-page' && reqState.fileLoaded)
+          }
+          demo={demo}
+        />
+        <MainPage
+          show={reqState.fileLoaded && currentPage === 'analyze-page'}
+          dataBundle={dataBundle}
+          reqState={reqState}
+        />
+        <ToastContainer
+          position="top-center"
+          autoClose={3500}
+          theme="dark"
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </div>
     </div>
   )
 }

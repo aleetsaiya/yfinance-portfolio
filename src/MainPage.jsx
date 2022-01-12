@@ -165,12 +165,13 @@ const MainPage = (props) => {
   }
 
   return (
-    <main className={show ? '' : 'hide'}>
+    <main style={show ? {} : { visibility: 'hidden' }}>
+      <h2>持股分析</h2>
       <div className="block-row" id="info">
         <Infos infos={getInfos(dataBundle.infoData)} />
       </div>
       <div className="block-title res-title">
-        <h3>持股狀況</h3>
+        <h3>占比</h3>
       </div>
       <div className="block-row">
         <div className="left chart">
