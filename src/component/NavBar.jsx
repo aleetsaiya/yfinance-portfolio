@@ -79,7 +79,14 @@ const NavBar = (props) => {
   return (
     <div>
       <div className="navbar" style={NavbarStyle()}>
-        <div className="nav-title">Alee Codes</div>
+        <div className="nav-title">
+          <a
+            href="https://github.com/aleetsaiya/yfinance-portfolio"
+            target="_blank" rel="noreferrer"
+          >
+            Alee Codes
+          </a>
+        </div>
         <div className="nav-wrapper">
           <li
             onClick={onClick}

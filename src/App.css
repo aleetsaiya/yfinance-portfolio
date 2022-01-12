@@ -54,6 +54,11 @@ button {
   cursor: pointer;
 }
 
+.nav-title a{
+  color: #fff;
+  text-decoration: none;
+}
+
 .nav-wrapper {
   width: 55%;
   display: flex;
@@ -178,7 +183,7 @@ button {
   border-right-color: transparent;
   border-bottom-color: transparent;
   animation-name: rotate;
-  animation-duration: 0.3s;
+  animation-duration: 0.5s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
@@ -288,15 +293,17 @@ button {
     border-right-color: transparent;
     border-bottom-color: transparent;
     animation-name: rotate;
-    animation-duration: 0.3s;
+    animation-duration: 0.5s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
   }
   .nav-wrapper > .nav {
     font-size: 12px;
+    margin-right: 0;
   }
   .navbar > .nav-title {
-    font-size: 17px;
+    margin-left: 3px;
+    font-size: 15px;
   }
 }
 
