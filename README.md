@@ -1,5 +1,5 @@
 # Yahoo Finance Portfolio
-將 Yahoo Finance 匯出後的資料進行可視化分析，幫助習慣使用 Yahoo Finance 進行交易紀錄的使用者。
+將 Yahoo Finance 匯出後的資料進行可視化分析。
 
 作品連結: [https://aleetsaiya.github.io/yfinance-portfolio](https://aleetsaiya.github.io/yfinance-portfolio)
 
